@@ -116,84 +116,78 @@ const Home = () => {
       flexDirection="column"
       height="100vh"
     >
-      <Box>
-        <Container maxWidth="sm">
+      <Container maxWidth="xs">
+        <Box>
+          <Container maxWidth="xs">
+            <Box display="flex">
+              <img
+                style={{
+                  width: "100%",
+                  borderRadius: "15px",
+                  border: "5px solid white",
+                }}
+                src={`/images/words/${imageUrl}`}
+                alt="word"
+              />
+            </Box>
+          </Container>
           <Box
+            my={1}
+            onClick={getRandomWord}
             display="flex"
-            sx={{
-              padding: {
-                xs: 2,
-                sm: 6,
-              },
-            }}
+            justifyContent="center"
           >
-            <img
-              style={{
-                width: "100%",
-                borderRadius: "15px",
-                border: "5px solid white",
-              }}
-              src={`/images/words/${imageUrl}`}
-              alt="word"
-            />
+            <Button color="error" variant="contained">
+              <ReplayIcon />
+            </Button>
           </Box>
-        </Container>
-        <Box
-          mb={1}
-          onClick={getRandomWord}
-          display="flex"
-          justifyContent="center"
-        >
-          <Button color="error" variant="contained">
-            <ReplayIcon />
-          </Button>
+          <Box display="flex" justifyContent="center">
+            {word.map((_, i) => (
+              <Box
+                key={i}
+                display="flex"
+                onClick={removeLastLetter}
+                justifyContent="center"
+                alignItems="center"
+                m={0.4}
+                sx={{
+                  cursor: "pointer",
+                  width: 58,
+                  height: 58,
+                  border: "3px solid #c4bfa3",
+                }}
+              >
+                <Typography variant="h4" fontWeight="bold">
+                  {guess[i]}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
         </Box>
-        <Box display="flex" justifyContent="center">
-          {word.map((_, i) => (
+        <Box display="flex" justifyContent="center" px={0.5} flexWrap="wrap">
+          {hiraganaArray.map((hiragana, i) => (
             <Box
-              key={i}
+              onClick={() => handleGuess(hiragana)}
+              key={hiragana}
               display="flex"
-              onClick={removeLastLetter}
               justifyContent="center"
               alignItems="center"
-              m={0.4}
+              m={0.3}
               sx={{
                 cursor: "pointer",
-                width: 58,
-                height: 58,
-                border: "3px solid #c4bfa3",
+                width: 46,
+                height: 46,
+                borderRadius: "10px",
+                backgroundColor: "#c4bfa3",
               }}
             >
-              <Typography variant="h4" fontWeight="bold">
-                {guess[i]}
+              <Typography variant="h5" fontWeight="bold">
+                {hiragana}
               </Typography>
             </Box>
           ))}
         </Box>
-      </Box>
-      <Box display="flex" justifyContent="center" px={0.5} flexWrap="wrap">
-        {hiraganaArray.map((hiragana, i) => (
-          <Box
-            onClick={() => handleGuess(hiragana)}
-            key={hiragana}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            m={0.3}
-            sx={{
-              cursor: "pointer",
-              width: 46,
-              height: 46,
-              borderRadius: "10px",
-              backgroundColor: "#c4bfa3",
-            }}
-          >
-            <Typography variant="h5" fontWeight="bold">
-              {hiragana}
-            </Typography>
-          </Box>
-        ))}
-      </Box>
+      </Container>
     </Box>
   );
 };
