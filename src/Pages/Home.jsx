@@ -1,6 +1,12 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import ReplayIcon from "@mui/icons-material/Replay";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert ref={ref} variant="filled" {...props} />;
+});
 
 const hiraganaArray = [
   "あ",
@@ -70,6 +76,24 @@ const Home = () => {
   const [guess, setGuess] = React.useState([]);
   const [word, setWord] = React.useState([]);
   const [imageUrl, setImageUrl] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [openError, setOpenError] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const handleCloseError = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenError(false);
+  };
 
   const handleGuess = (value) => {
     if (guess.length === word.length) return;
@@ -93,11 +117,11 @@ const Home = () => {
   const checkGuess = () => {
     if (guess.length === word.length) {
       if (guess.join("") === word.join("")) {
-        alert("Correct!");
+        setOpen(true);
         setGuess([]);
         getRandomWord();
       } else {
-        alert("Incorrect!");
+        setOpenError(true);
       }
     }
   };
@@ -105,7 +129,7 @@ const Home = () => {
   const getRandomWord = () => {
     let randomIndex = Math.floor(Math.random() * words.length);
     let randomWord = words[randomIndex];
-    while (word.join("") === randomWord) {
+    while (word.join("") === randomWord.word) {
       randomIndex = Math.floor(Math.random() * words.length);
       randomWord = words[randomIndex];
     }
@@ -195,6 +219,30 @@ const Home = () => {
           ))}
         </Box>
       </Container>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          ¡Correcto!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={openError}
+        autoHideDuration={3000}
+        onClose={handleCloseError}
+      >
+        <Alert
+          onClose={handleCloseError}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          ¡Incorrecto!
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
