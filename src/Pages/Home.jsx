@@ -1,5 +1,11 @@
-import { Box, Button, Container, Typography } from "@mui/material";
-import React, { useEffect } from "react";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Typography,
+} from "@mui/material";
+import React, { useEffect, useRef } from "react";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -72,14 +78,12 @@ const Home = () => {
   const [open, setOpen] = React.useState(false);
   const [openError, setOpenError] = React.useState(false);
   const [words, setWords] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
 
   const db = useFirestore();
 
   const getWords = async () => {
     const querySnapshot = await getDocs(collection(db, "words"));
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, " => ", doc.data());
-    });
     const tempWords = querySnapshot.docs.map((doc) => doc.data());
     setWords(tempWords);
   };
@@ -143,9 +147,23 @@ const Home = () => {
       randomWord = words[randomIndex];
     }
     setWord(randomWord.word.split(""));
+    handleLoad();
     setImageUrl(randomWord.imageUrl);
     setGuess([]);
   };
+
+  const handleLoad = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+  };
+
+  const imageRef = useRef(null);
+
+  useEffect(() => {
+    console.log(imageRef?.current?.complete);
+  }, [imageRef]);
 
   return (
     <Box
@@ -159,8 +177,9 @@ const Home = () => {
       <Container maxWidth="xs">
         <Box mb={4}>
           <Container maxWidth="xs">
-            <Box display="flex">
+            <Box display="flex" position="relative">
               <img
+                ref={imageRef}
                 style={{
                   width: "100%",
                   borderRadius: "15px",
@@ -173,6 +192,33 @@ const Home = () => {
                 src={`${imageUrl}`}
                 alt=""
               />
+              {loading && (
+                <Box
+                  position="absolute"
+                  style={{
+                    right: "5px",
+                    left: "5px",
+                    top: "5px",
+                    bottom: "5px",
+                    backgroundColor: "#00000055",
+                    borderRadius: "15px",
+                  }}
+                >
+                  <CircularProgress
+                    style={{
+                      position: "absolute",
+                      right: "0",
+                      left: "0",
+                      top: "0",
+                      marginTop: "auto",
+                      marginLeft: "auto",
+                      marginRight: "auto",
+                      bottom: "0",
+                      marginBottom: "auto",
+                    }}
+                  />
+                </Box>
+              )}
             </Box>
           </Container>
           <Box
