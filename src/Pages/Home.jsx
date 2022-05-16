@@ -103,8 +103,12 @@ const Home = () => {
   };
 
   const getRandomWord = () => {
-    const randomIndex = Math.floor(Math.random() * words.length);
-    const randomWord = words[randomIndex];
+    let randomIndex = Math.floor(Math.random() * words.length);
+    let randomWord = words[randomIndex];
+    while (word.join("") === randomWord) {
+      randomIndex = Math.floor(Math.random() * words.length);
+      randomWord = words[randomIndex];
+    }
     setWord(randomWord.word.split(""));
     setImageUrl(randomWord.imageUrl);
   };
@@ -112,7 +116,8 @@ const Home = () => {
   return (
     <Box
       display="flex"
-      justifyContent="space-evenly"
+      mt={1}
+      justifyContent="space-between"
       flexDirection="column"
       height="100vh"
     >
@@ -125,6 +130,8 @@ const Home = () => {
                   width: "100%",
                   borderRadius: "15px",
                   border: "5px solid white",
+                  height: "200px",
+                  objectFit: "cover",
                 }}
                 src={`/images/words/${imageUrl}`}
                 alt="word"
