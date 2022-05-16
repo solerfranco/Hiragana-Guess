@@ -3,6 +3,14 @@ import React, { useEffect } from "react";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import { collection, doc, getDocs, getFirestore } from "firebase/firestore";
+import {
+  FirebaseAppProvider,
+  FirestoreProvider,
+  useFirestoreDocData,
+  useFirestore,
+  useFirebaseApp,
+} from "reactfire";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert ref={ref} variant="filled" {...props} />;
@@ -57,28 +65,34 @@ const hiraganaArray = [
   "ん",
 ];
 
-const words = [
-  {
-    word: "いぬ",
-    imageUrl: "dog.png",
-  },
-  {
-    word: "ねこ",
-    imageUrl: "cat.png",
-  },
-  {
-    word: "うほ",
-    imageUrl: "horse.png",
-  },
-];
-
 const Home = () => {
   const [guess, setGuess] = React.useState([]);
   const [word, setWord] = React.useState([]);
   const [imageUrl, setImageUrl] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [openError, setOpenError] = React.useState(false);
+  const [words, setWords] = React.useState([]);
 
+  const db = useFirestore();
+
+  const getWords = async () => {
+    const querySnapshot = await getDocs(collection(db, "words"));
+    querySnapshot.forEach((doc) => {
+      console.log(doc.id, " => ", doc.data());
+    });
+    const tempWords = querySnapshot.docs.map((doc) => doc.data());
+    setWords(tempWords);
+  };
+
+  useEffect(() => {
+    getWords();
+  }, []);
+
+  useEffect(() => {
+    if (words.length > 0) {
+      getRandomWord();
+    }
+  }, [words]);
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -110,15 +124,10 @@ const Home = () => {
     }
   }, [guess]);
 
-  useEffect(() => {
-    getRandomWord();
-  }, []);
-
   const checkGuess = () => {
     if (guess.length === word.length) {
       if (guess.join("") === word.join("")) {
         setOpen(true);
-        setGuess([]);
         getRandomWord();
       } else {
         setOpenError(true);
@@ -135,6 +144,7 @@ const Home = () => {
     }
     setWord(randomWord.word.split(""));
     setImageUrl(randomWord.imageUrl);
+    setGuess([]);
   };
 
   return (
@@ -145,8 +155,9 @@ const Home = () => {
       flexDirection="column"
       height="100vh"
     >
+      {/* {data} */}
       <Container maxWidth="xs">
-        <Box>
+        <Box mb={4}>
           <Container maxWidth="xs">
             <Box display="flex">
               <img
@@ -156,9 +167,11 @@ const Home = () => {
                   border: "5px solid white",
                   height: "200px",
                   objectFit: "cover",
+                  backgroundImage: "url('images/placeholder.png')",
+                  backgroundSize: "fill",
                 }}
-                src={`/images/words/${imageUrl}`}
-                alt="word"
+                src={`${imageUrl}`}
+                alt=""
               />
             </Box>
           </Container>
