@@ -71,6 +71,31 @@ const hiraganaArray = [
   "ん",
 ];
 
+const tentenArray = [
+  "が",
+  "ぎ",
+  "ぐ",
+  "げ",
+  "ご",
+  "ざ",
+  "じ",
+  "ず",
+  "ぜ",
+  "ぞ",
+  "だ",
+  "ぢ",
+  "づ",
+  "で",
+  "ど",
+  "ば",
+  "び",
+  "ぶ",
+  "べ",
+  "ぼ",
+];
+
+const maruArray = ["ぱ", "ぴ", "ぷ", "ぺ", "ぽ"];
+
 const Home = () => {
   const [guess, setGuess] = React.useState([]);
   const [word, setWord] = React.useState([]);
@@ -79,6 +104,7 @@ const Home = () => {
   const [openError, setOpenError] = React.useState(false);
   const [words, setWords] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [keyboard, setKeyboard] = React.useState(hiraganaArray);
 
   const db = useFirestore();
 
@@ -135,6 +161,7 @@ const Home = () => {
         getRandomWord();
       } else {
         setOpenError(true);
+        setGuess([]);
       }
     }
   };
@@ -159,12 +186,6 @@ const Home = () => {
     }, 1500);
   };
 
-  const imageRef = useRef(null);
-
-  useEffect(() => {
-    console.log(imageRef?.current?.complete);
-  }, [imageRef]);
-
   return (
     <Box
       display="flex"
@@ -179,7 +200,6 @@ const Home = () => {
           <Container maxWidth="xs">
             <Box display="flex" position="relative">
               <img
-                ref={imageRef}
                 style={{
                   width: "100%",
                   borderRadius: "15px",
@@ -254,8 +274,80 @@ const Home = () => {
             ))}
           </Box>
         </Box>
+        <Box display="flex" justifyContent="space-evenly">
+          <Box
+            onClick={() => setKeyboard(maruArray)}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            m={0.3}
+            sx={{
+              cursor: "pointer",
+              width: 46,
+              height: 46,
+              borderRadius: "10px",
+              backgroundColor: "success.main",
+            }}
+          >
+            <Typography
+              style={{
+                paddingTop: "20%",
+                paddingLeft: "80%",
+              }}
+              variant="h3"
+              fontWeight="bold"
+              color="white"
+            >
+              ゜
+            </Typography>
+          </Box>
+          <Box
+            onClick={() => setKeyboard(hiraganaArray)}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            m={0.3}
+            sx={{
+              cursor: "pointer",
+              width: 46,
+              height: 46,
+              borderRadius: "10px",
+              backgroundColor: "success.main",
+            }}
+          >
+            <Typography variant="h5" fontWeight="bold" color="white">
+              あ
+            </Typography>
+          </Box>
+          <Box
+            onClick={() => setKeyboard(tentenArray)}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            m={0.3}
+            sx={{
+              cursor: "pointer",
+              width: 46,
+              height: 46,
+              borderRadius: "10px",
+              backgroundColor: "success.main",
+            }}
+          >
+            <Typography
+              style={{
+                paddingTop: "20%",
+                paddingLeft: "80%",
+              }}
+              variant="h3"
+              fontWeight="bold"
+              color="white"
+            >
+              ゛
+            </Typography>
+          </Box>
+        </Box>
         <Box display="flex" justifyContent="center" px={0.5} flexWrap="wrap">
-          {hiraganaArray.map((hiragana, i) => (
+          {keyboard.map((hiragana, i) => (
             <Box
               onClick={() => handleGuess(hiragana)}
               key={hiragana}
