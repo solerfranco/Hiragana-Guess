@@ -3,20 +3,16 @@ import {
   Button,
   CircularProgress,
   Container,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import { collection, doc, getDocs, getFirestore } from "firebase/firestore";
-import {
-  FirebaseAppProvider,
-  FirestoreProvider,
-  useFirestoreDocData,
-  useFirestore,
-  useFirebaseApp,
-} from "reactfire";
+import { collection, getDocs } from "firebase/firestore";
+import { useFirestore } from "reactfire";
+import HelpIcon from "@mui/icons-material/Help";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert ref={ref} variant="filled" {...props} />;
@@ -99,6 +95,7 @@ const maruArray = ["ぱ", "ぴ", "ぷ", "ぺ", "ぽ"];
 const Home = () => {
   const [guess, setGuess] = React.useState([]);
   const [word, setWord] = React.useState([]);
+  const [romaji, setRomaji] = React.useState("");
   const [imageUrl, setImageUrl] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [openError, setOpenError] = React.useState(false);
@@ -174,6 +171,7 @@ const Home = () => {
       randomWord = words[randomIndex];
     }
     setWord(randomWord.word.split(""));
+    setRomaji(randomWord.romaji);
     handleLoad();
     setImageUrl(randomWord.imageUrl);
     setGuess([]);
@@ -251,7 +249,7 @@ const Home = () => {
               <ReplayIcon />
             </Button>
           </Box>
-          <Box display="flex" justifyContent="center">
+          <Box display="flex" justifyContent="center" alignItems="center">
             {word.map((_, i) => (
               <Box
                 key={i}
@@ -272,6 +270,9 @@ const Home = () => {
                 </Typography>
               </Box>
             ))}
+            <Tooltip title={`Romaji: ${romaji}`}>
+              <HelpIcon sx={{ color: "gray" }} />
+            </Tooltip>
           </Box>
         </Box>
         <Box display="flex" justifyContent="space-evenly">
