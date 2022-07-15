@@ -6,13 +6,14 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import ReplayIcon from "@mui/icons-material/Replay";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { collection, getDocs } from "firebase/firestore";
 import { useFirestore } from "reactfire";
 import HelpIcon from "@mui/icons-material/Help";
+import { useNavigate } from "react-router-dom";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert ref={ref} variant="filled" {...props} />;
@@ -104,6 +105,8 @@ const Home = () => {
   const [keyboard, setKeyboard] = React.useState(hiraganaArray);
 
   const db = useFirestore();
+
+  const navigate = useNavigate();
 
   const getWords = async () => {
     const querySnapshot = await getDocs(collection(db, "words"));
@@ -394,6 +397,9 @@ const Home = () => {
           ¡Incorrecto!
         </Alert>
       </Snackbar>
+      <Button onClick={() => navigate("/add")}>
+        Add
+      </Button>
     </Box>
   );
 };
