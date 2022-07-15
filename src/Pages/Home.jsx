@@ -192,7 +192,6 @@ const Home = () => {
       flexDirection="column"
       height="100vh"
     >
-      {/* {data} */}
       <Container maxWidth="xs">
         <Box mb={4}>
           <Container maxWidth="xs">
